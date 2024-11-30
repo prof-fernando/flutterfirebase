@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:appfirebase/home_page.dart';
 import 'package:appfirebase/nova_conta_page.dart';
 import 'package:appfirebase/services/usuario_service.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +39,10 @@ class LoginPage extends StatelessWidget {
                   content: Text(resposta),
                 );
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              } else {}
+              } else {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (_) => HomePage()));
+              }
             },
             child: Text('Login'),
           ),

@@ -14,8 +14,12 @@ class UsuarioService {
       UserCredential user =
           await _auth.signInWithEmailAndPassword(email: email, password: senha);
       return "";
-    } catch (erro) {
-      return "Usuário/senha inválidos ";
+    } on FirebaseAuthException catch (erro) {
+      //if (erro.code == '') {
+      print('$erro.code');
+      //}
+
+      return erro.message!;
     }
   }
 }

@@ -25,7 +25,16 @@ class HomePage extends StatelessWidget {
             return ListView.builder(
                 itemCount: dados.length,
                 itemBuilder: (context, indice) {
-                  return Text(dados[indice]['nome']);
+                  return ListTile(
+                    title: Text(dados[indice]['nome']),
+                    subtitle: Text(dados[indice]['console']),
+                    trailing: ElevatedButton(
+                        onPressed: () {
+                          //FirestoreService().excluir(dados[indice]['id'] );
+                          print('${dados[indice].id}');
+                        },
+                        child: Icon(Icons.clear)),
+                  );
                 });
           },
         ),

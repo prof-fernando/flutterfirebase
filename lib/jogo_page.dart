@@ -6,12 +6,41 @@ import 'package:flutter/widgets.dart';
 
 import 'services/firestore_service.dart';
 
-class JogoPage extends StatelessWidget {
-  JogoPage({super.key});
+class JogoPage extends StatefulWidget {
+  String? id;
+  JogoPage({this.id, super.key});
 
+  @override
+  State<JogoPage> createState() => _JogoPageState();
+}
+
+class _JogoPageState extends State<JogoPage> {
   TextEditingController _txtNome = TextEditingController();
+
   TextEditingController _txtConsole = TextEditingController();
+
   TextEditingController _txtAno = TextEditingController();
+
+  FirestoreService servico = FirestoreService();
+
+  @override
+  void initState() {
+    if (widget.id != null) {
+      //carregar os dados a partir do id
+
+      servico.buscarPorID(widget.id!)!.then((dados) {
+        _txtNome.text = dados['nome'];
+        _txtConsole.text = dados['console'];
+        _txtAno.text = dados['ano_lancamento'].toString();
+      });
+
+      // dados.get().then((dados) {
+
+      // });
+    }
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,14 +72,20 @@ class JogoPage extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () async {
-                DocumentReference resposta = await FirestoreService().gravar(
-                    _txtNome.text, _txtConsole.text, int.parse(_txtAno.text));
+                DocumentReference resposta = await servico.gravar(
+                    _txtNome.text,
+                    _txtConsole.text,
+                    int.parse(_txtAno.text),
+                    widget.id.toString());
 
                 if (resposta != null) {
                   SnackBar snackBar = SnackBar(
                     content: Text('Salvo'),
                   );
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  resposta.get().then((dados) {
+                    widget.id = dados.id;
+                  });
                 } else {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (_) => HomePage()));

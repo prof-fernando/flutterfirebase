@@ -28,12 +28,46 @@ class HomePage extends StatelessWidget {
                   return ListTile(
                     title: Text(dados[indice]['nome']),
                     subtitle: Text(dados[indice]['console']),
-                    trailing: ElevatedButton(
+                    trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                      IconButton(
                         onPressed: () {
-                          //FirestoreService().excluir(dados[indice]['id'] );
-                          print('${dados[indice].id}');
+                          String idCorrente = dados[indice].id;
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => JogoPage(id: idCorrente)));
                         },
-                        child: Icon(Icons.clear)),
+                        icon: Icon(Icons.edit),
+                      ),
+                      IconButton(
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (_) {
+                                  return AlertDialog(
+                                    title: Text('Excluir item'),
+                                    content: Text(
+                                        'Tem certeza que deseja excluir o item ${dados[indice]['nome']}?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text('Cancelar'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          FirestoreService()
+                                              .excluir(dados[indice].id)
+                                              .then((_) =>
+                                                  {Navigator.pop(context)});
+                                        },
+                                        child: Text('Simk'),
+                                      )
+                                    ],
+                                  );
+                                });
+                          },
+                          icon: Icon(Icons.clear)),
+                    ]),
                   );
                 });
           },
